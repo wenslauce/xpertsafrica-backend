@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc && npm run copy-static",
-    "copy-static": "powershell -Command \"if (!(Test-Path dist/public)) { New-Item -ItemType Directory -Path dist/public } ; Copy-Item -Path src/public/* -Destination dist/public -Recurse -Force\"",
+    "copy-static": "mkdir -p dist/public && cp -r src/public/* dist/public/",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
