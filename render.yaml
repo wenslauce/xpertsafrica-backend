@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: xperts-africa-backend
+    runtime: node
+    plan: standard # Choose a plan that includes static IPs
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://xperts-africa.vercel.app # Update with your Vercel frontend URL
+      - key: WHMCS_API_URL
+        sync: false # This will be manually set in the Render dashboard
+      - key: WHMCS_API_IDENTIFIER
+        sync: false
+      - key: WHMCS_API_SECRET
+        sync: false
