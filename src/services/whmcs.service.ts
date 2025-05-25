@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as querystring from 'querystring';
 import { WhmcsApiError } from '../utils/errors';
-import { WhmcsApiResponse, DomainWhoisResponse, TldPricingResponse, ProductsResponse } from '../types/whmcs';
+import { WhmcsApiResponse, DomainWhoisResponse, TldPricingResponse, ProductsResponse, CurrenciesResponse, Currency } from '../types/whmcs';
 
 // WHMCS API configuration
 const WHMCS_API_URL = process.env.WHMCS_API_URL;

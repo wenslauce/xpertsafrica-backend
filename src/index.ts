@@ -16,24 +16,39 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
-// Apply API key auth to all API routes in production
-if (process.env.NODE_ENV === 'production') {
-  app.use('/api', apiKeyAuth as express.RequestHandler);
-}
+// API key auth disabled for testing
+// if (process.env.NODE_ENV === 'production') {
+//   app.use('/api', apiKeyAuth as express.RequestHandler);
+// }
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function(origin, callback) {
+    // Get allowed origins from env var and split by comma
+    const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000').split(',');
+    
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log(`Origin ${origin} not allowed by CORS`);
+      callback(null, true); // Temporarily allow all origins while testing
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-KEY']
 }));
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Routes
+// Routes - available at both paths for compatibility
 app.use('/api/whmcs', whmcsRoutes);
+// Also make routes available without /api prefix for direct testing
+app.use('/whmcs', whmcsRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
