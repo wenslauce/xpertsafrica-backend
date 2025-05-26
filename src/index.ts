@@ -6,7 +6,15 @@ import whmcsRoutes from './routes/whmcs.routes';
 import { apiKeyAuth, requestLogger } from './middlewares/auth.middleware';
 
 // Load environment variables
-dotenv.config();
+const result = dotenv.config();
+
+// Debug environment loading
+if (result.error) {
+  console.error('Error loading .env file:', result.error.message);
+} else {
+  console.log('.env file loaded successfully');
+  console.log('WHMCS API URL loaded:', process.env.WHMCS_API_URL ? 'Yes' : 'No');
+}
 
 const app = express();
 const port = process.env.PORT || 4000;

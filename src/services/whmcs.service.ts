@@ -3,10 +3,7 @@ import * as querystring from 'querystring';
 import { WhmcsApiError } from '../utils/errors';
 import { WhmcsApiResponse, DomainWhoisResponse, TldPricingResponse, ProductsResponse, CurrenciesResponse, Currency } from '../types/whmcs';
 
-// WHMCS API configuration
-const WHMCS_API_URL = process.env.WHMCS_API_URL;
-const WHMCS_API_IDENTIFIER = process.env.WHMCS_API_IDENTIFIER;
-const WHMCS_API_SECRET = process.env.WHMCS_API_SECRET;
+// WHMCS API configuration - access environment variables directly when needed instead of at module load time
 
 /**
  * Call the WHMCS API with the provided action and parameters
@@ -18,15 +15,20 @@ export async function callWhmcsApi<T = any>(
   try {
     console.log(`WHMCS API Call - Action: ${action}`, params);
 
+    // Access environment variables directly when needed
+    const apiUrl = process.env.WHMCS_API_URL;
+    const apiIdentifier = process.env.WHMCS_API_IDENTIFIER;
+    const apiSecret = process.env.WHMCS_API_SECRET;
+    
     // Validate API configuration
-    if (!WHMCS_API_URL || !WHMCS_API_IDENTIFIER || !WHMCS_API_SECRET) {
+    if (!apiUrl || !apiIdentifier || !apiSecret) {
       throw new WhmcsApiError('Missing WHMCS API configuration', 500);
     }
 
     // Build form data payload
     const formData = new URLSearchParams();
-    formData.append('identifier', WHMCS_API_IDENTIFIER);
-    formData.append('secret', WHMCS_API_SECRET);
+    formData.append('identifier', apiIdentifier);
+    formData.append('secret', apiSecret);
     formData.append('action', action);
     formData.append('responsetype', 'json');
 
@@ -38,7 +40,7 @@ export async function callWhmcsApi<T = any>(
     });
 
     // Make the API call
-    const response = await axios.post(WHMCS_API_URL, formData, {
+    const response = await axios.post(apiUrl, formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
